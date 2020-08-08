@@ -62,11 +62,18 @@ def perceptron_train(x,y,w,n_iter):
 
             prediction = perceptron_prediction(x[i][:],w)
 
-            error = y[i] - prediction 
+            #error = y[i] - prediction 
 
             for j in range(len(w)): 			
 
-                w[j] = w[j]+(step*error*x[i][j]) 
+                #w[j] = w[j]+(step*error*x[i][j]) 
+
+                if (prediction == y[i]):
+                    correct = 0
+                else:
+                    correct = 1
+
+                w[j] = w[j]+(step*y[i]*x[i][j]*correct) 
 
     return w
         
@@ -123,11 +130,9 @@ def main():
 
     final_weights = perceptron_train(x,y,weights,10000)
 
-    final_weights
-
     predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),final_weights)
 
-    print(predicted)
+    print(final_weights)
 
     print(perceptron_accuracy(y,predicted))
 
