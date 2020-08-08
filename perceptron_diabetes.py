@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 # Predict the output for a single sample
-def perceptron_prediction(input,w) {
+def perceptron_prediction(input,w):
 
     total_sum = 0.0
     tuples_input_w = zip(input,w)
@@ -15,7 +15,6 @@ def perceptron_prediction(input,w) {
 
         total_sum = total_sum + partial_sum
     
-
     if (total_sum >= 0.0):
         prediction = 1.0
     else:
@@ -23,5 +22,39 @@ def perceptron_prediction(input,w) {
 
     return prediction
 
-}
+# Predict the output for the complete dataset
+def perceptron_prediction_total(input_matrix,w):
+
+    predicted = []
+
+    for i in range(len(input_matrix)):
+        predicted_value = perceptron_prediction(input_matrix[i],w)
+        predicted.append(predicted_value)
+    
+    return predicted
+
+
+
+# Get the error of the perceptron
+def perceptron_error(truth,predicted):
+    pass
+
+def main():
+
+    diabetes = pd.read_csv("datasets_228_482_diabetes.csv")
+
+    # Recode the output column to get -1 and 1 output values
+    diabetes['Outcome'] = np.where(diabetes['Outcome'] == 0, -1, diabetes['Outcome'])
+
+    print(diabetes)
+
+
+
+
+if __name__ == '__main__':
+	main()
+
+
+
+
 
