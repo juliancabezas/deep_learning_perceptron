@@ -28,7 +28,8 @@ def perceptron_prediction_total(input_matrix,w):
     predicted = []
 
     for i in range(len(input_matrix)):
-        predicted_value = perceptron_prediction(input_matrix[i],w)
+        prueba = input_matrix[i][:]
+        predicted_value = perceptron_prediction(input_matrix[i][:],w)
         predicted.append(predicted_value)
     
     return predicted
@@ -36,8 +37,39 @@ def perceptron_prediction_total(input_matrix,w):
 
 
 # Get the error of the perceptron
-def perceptron_error(truth,predicted):
-    pass
+def perceptron_accuracy(truth,predicted):
+
+    correct = 0
+
+    for i in range(len(predicted)):
+        if (predicted[i] == truth[i]):
+            correct = correct +1
+
+    return correct / len(predicted)
+
+def perceptron_train(x,y,w,n_iter):
+
+    predicted = perceptron_prediction_total(x,w)
+
+    #step = 1 / len(x)
+    step = 0.5
+
+    for iter in range(n_iter):
+
+        error = 0
+
+        for i in range(len(x)):
+
+            prediction = perceptron_prediction(x[i][:],w)
+
+            error = y[i] - prediction 
+
+            for j in range(len(w)): 			
+
+                w[j] = w[j]+(step*error*x[i][j]) 
+
+    return w
+        
 
 # scale data to have it between a and b, using the equation:
 # x(scaled) = (b-a) (x - min(x) / max(x) - min(x)) + a
@@ -74,6 +106,34 @@ def main():
     diabetes['Age'] = scale_data(diabetes['Age'],-1,1)
 
     print(diabetes)
+
+    weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+    #weights = [1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00]
+    #weights = [-1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00]
+    #weights = [0.25, 0.10, 0.5, 1.0, 1.0,1.00, 0.1, 1.00]
+
+    #predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),weights)
+
+    #print(predicted)
+
+    x = diabetes.iloc[:, :-1].values.tolist()
+    
+    y = diabetes.iloc[:, -1].values.tolist()
+
+
+    final_weights = perceptron_train(x,y,weights,10000)
+
+    final_weights
+
+    predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),final_weights)
+
+    print(predicted)
+
+    print(perceptron_accuracy(y,predicted))
+
+    # Initial weights
+
+
 
 
 if __name__ == '__main__':
