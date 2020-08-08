@@ -39,6 +39,22 @@ def perceptron_prediction_total(input_matrix,w):
 def perceptron_error(truth,predicted):
     pass
 
+# scale data to have it between a and b, using the equation:
+# x(scaled) = (b-a) (x - min(x) / max(x) - min(x)) + a
+# https://stats.stackexchange.com/questions/178626/how-to-normalize-data-between-1-and-1
+def scale_data(x,lower_limit,upper_limit):
+
+    maximum = np.max(x)
+    minimum = np.min(x)
+    scaled = []
+
+    for i in range(len(x)):
+        x_scaled = ((upper_limit - lower_limit)*((x[i] - minimum) / (maximum - minimum))) + lower_limit
+        scaled.append(x_scaled)
+
+    return scaled
+
+
 def main():
 
     diabetes = pd.read_csv("datasets_228_482_diabetes.csv")
@@ -46,9 +62,18 @@ def main():
     # Recode the output column to get -1 and 1 output values
     diabetes['Outcome'] = np.where(diabetes['Outcome'] == 0, -1, diabetes['Outcome'])
 
+
+    # Scale the variables
+    diabetes['Pregnancies'] = scale_data(diabetes['Pregnancies'],-1,1)
+    diabetes['Glucose'] = scale_data(diabetes['Glucose'],-1,1)
+    diabetes['BloodPressure'] = scale_data(diabetes['BloodPressure'],-1,1)
+    diabetes['SkinThickness'] = scale_data(diabetes['SkinThickness'],-1,1)
+    diabetes['Insulin'] = scale_data(diabetes['Insulin'],-1,1)
+    diabetes['BMI'] = scale_data(diabetes['BMI'],-1,1)
+    diabetes['DiabetesPedigreeFunction'] = scale_data(diabetes['DiabetesPedigreeFunction'],-1,1)
+    diabetes['Age'] = scale_data(diabetes['Age'],-1,1)
+
     print(diabetes)
-
-
 
 
 if __name__ == '__main__':
