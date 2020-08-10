@@ -49,7 +49,11 @@ def perceptron_accuracy(truth,predicted):
 
     return correct / len(predicted)
 
-def perceptron_train(x,y,w,n_iter):
+def perceptron_train(x,y,n_iter):
+
+    w = []
+    for i in range(x.shape[1]):
+        w.append(0.0)
 
     predicted = perceptron_prediction_total(x,w)
 
@@ -122,6 +126,8 @@ def main():
     diabetes['DiabetesPedigreeFunction'] = scale_data(diabetes['DiabetesPedigreeFunction'],-1,1)
     diabetes['Age'] = scale_data(diabetes['Age'],-1,1)
 
+    #diabetes.insert(0, 'Intercept', 1.0)
+
     print(diabetes)
 
     # Generate lists of lists
@@ -144,15 +150,15 @@ def main():
     k_fold_strat = StratifiedKFold(n_splits=4, random_state=23,shuffle=True)
     #k_fold_strat.get_n_splits(x, y)
 
-    
+
 
     # Iterate thorgh the folds
     for kfold_train_index, kfold_test_index in k_fold_strat.split(x, y):
         kfold_x_train, kfold_x_test = x[kfold_train_index][:], x[kfold_test_index][:]
         kfold_y_train, kfold_y_test = y[kfold_train_index], y[kfold_test_index]
 
-        initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
-        trained_weights = perceptron_train(kfold_x_train,kfold_y_train,initial_weights,300)
+        #initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+        trained_weights = perceptron_train(kfold_x_train,kfold_y_train,300)
         predicted = perceptron_prediction_total(kfold_x_test,trained_weights)
         print(trained_weights)
         print(perceptron_accuracy(y,kfold_y_test))
