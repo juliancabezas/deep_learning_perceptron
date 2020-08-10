@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import cohen_kappa_score, fbeta_score
 
 # Predict the output for a single sample
 def perceptron_prediction(input,w):
@@ -49,7 +50,7 @@ def perceptron_accuracy(truth,predicted):
 
     return correct / len(predicted)
 
-def perceptron_train(x,y,n_iter):
+def perceptron_train(x,y,n_iter,step):
 
     w = []
     for i in range(x.shape[1]):
@@ -57,9 +58,6 @@ def perceptron_train(x,y,n_iter):
 
     predicted = perceptron_prediction_total(x,w)
 
-    #step = 1 / len(x)
-    step = 0.1
-    #step = 1.0
 
     for iter in range(n_iter):
 
@@ -137,7 +135,7 @@ def main():
     x = diabetes.iloc[:, :-1].values
     y = diabetes.iloc[:, -1].values
 
-    print(np.mean(y))
+    #print(np.mean(y))
 
     # Generate test and train datasets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=23,stratify=y,shuffle=True)
@@ -150,18 +148,61 @@ def main():
     k_fold_strat = StratifiedKFold(n_splits=4, random_state=23,shuffle=True)
     #k_fold_strat.get_n_splits(x, y)
 
-
+    step_array = np.arange(start=0.1, stop=1.1, step=0.1)
+    iter_array = np.arange(start=10, stop=110, step=10)
 
     # Iterate thorgh the folds
-    for kfold_train_index, kfold_test_index in k_fold_strat.split(x, y):
-        kfold_x_train, kfold_x_test = x[kfold_train_index][:], x[kfold_test_index][:]
-        kfold_y_train, kfold_y_test = y[kfold_train_index], y[kfold_test_index]
 
-        #initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
-        trained_weights = perceptron_train(kfold_x_train,kfold_y_train,300)
-        predicted = perceptron_prediction_total(kfold_x_test,trained_weights)
-        print(trained_weights)
-        print(perceptron_accuracy(y,kfold_y_test))
+    step_full = []
+    n_iter_full = []
+    acc_full = []
+    kappa_full = []
+    f1_full = []
+
+    for step in step_array:
+
+        for n_iter in iter_array:
+
+            acc = []
+            kappa = []
+            f1 = []
+
+            for kfold_train_index, kfold_test_index in k_fold_strat.split(x, y):
+
+                kfold_x_train, kfold_x_test = x[kfold_train_index][:], x[kfold_test_index][:]
+                kfold_y_train, kfold_y_test = y[kfold_train_index], y[kfold_test_index]
+
+
+
+                #initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+                trained_weights = perceptron_train(kfold_x_train,kfold_y_train,n_iter=n_iter,step=step)
+                predicted = perceptron_prediction_total(kfold_x_test,trained_weights)
+
+                acc.append(perceptron_accuracy(kfold_y_test,predicted))
+                kappa.append(cohen_kappa_score(kfold_y_test, predicted))
+                f1.append(fbeta_score(kfold_y_test, predicted, beta=1))
+
+                #print(trained_weights)
+                #print(perceptron_accuracy(kfold_y_test,predicted))
+
+            print(step)
+            print(n_iter)
+            
+            step_full.append(step)
+            n_iter_full.append(n_iter)
+            acc_full.append(np.mean(acc))
+            kappa_full.append(np.mean(kappa))
+            f1_full.append(np.mean(f1))
+
+
+    dic = {'Step':step_full,'N_Iter':n_iter_full,'Accuracy':acc_full,'Kappa':kappa_full,'N_Iter':f1_full}
+    df_grid_search = pd.DataFrame(dic)
+    df_grid_search.to_csv('grid_search_perceptron.csv')
+
+
+
+
+    
 
     
 
