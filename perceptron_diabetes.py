@@ -8,15 +8,17 @@ from sklearn.metrics import cohen_kappa_score, fbeta_score
 def perceptron_prediction(input,w):
 
     total_sum = 0.0
-    tuples_input_w = zip(input,w)
+    #tuples_input_w = zip(input,w)
     prediction = 0.0
 
-    for input_row,weight in tuples_input_w:
+    total_sum = np.dot(input,w)
+
+    """for input_row,weight in tuples_input_w:
 
         # This will multiply the tuples and add them
         partial_sum = input_row * weight
 
-        total_sum = total_sum + partial_sum
+        total_sum = total_sum + partial_sum """
     
     if (total_sum >= 0.0):
         prediction = 1.0
@@ -56,14 +58,14 @@ def perceptron_train(x,y,n_iter,step):
     for i in range(x.shape[1]):
         w.append(0.0)
 
-    predicted = perceptron_prediction_total(x,w)
+    #predicted = perceptron_prediction_total(x,w)
 
 
     for iter in range(n_iter):
 
         error = 0
-        predic = perceptron_prediction_total(x,w)
-        acc = perceptron_accuracy(y,perceptron_prediction_total(x,w))
+        #predic = perceptron_prediction_total(x,w)
+        #acc = perceptron_accuracy(y,perceptron_prediction_total(x,w))
         #print(perceptron_accuracy(y,perceptron_prediction_total(x,w)))
 
         for i in range(len(x)):
@@ -195,11 +197,14 @@ def main():
             f1_full.append(np.mean(f1))
 
 
-    dic = {'Step':step_full,'N_Iter':n_iter_full,'Accuracy':acc_full,'Kappa':kappa_full,'N_Iter':f1_full}
+    dic = {'Step':step_full,'N_Iter':n_iter_full,'Accuracy':acc_full,'Kappa':kappa_full,'F1':f1_full}
     df_grid_search = pd.DataFrame(dic)
     df_grid_search.to_csv('grid_search_perceptron.csv')
 
 
+
+
+    
 
 
     
