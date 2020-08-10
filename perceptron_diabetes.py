@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold
 
 # Predict the output for a single sample
 def perceptron_prediction(input,w):
@@ -52,11 +54,15 @@ def perceptron_train(x,y,w,n_iter):
     predicted = perceptron_prediction_total(x,w)
 
     #step = 1 / len(x)
-    step = 0.5
+    step = 0.1
+    #step = 1.0
 
     for iter in range(n_iter):
 
         error = 0
+        predic = perceptron_prediction_total(x,w)
+        acc = perceptron_accuracy(y,perceptron_prediction_total(x,w))
+        #print(perceptron_accuracy(y,perceptron_prediction_total(x,w)))
 
         for i in range(len(x)):
 
@@ -64,16 +70,20 @@ def perceptron_train(x,y,w,n_iter):
 
             #error = y[i] - prediction 
 
-            for j in range(len(w)): 			
+            for j in range(len(w)):
+
+                #prediction = perceptron_prediction(x[i][:],w) 			
 
                 #w[j] = w[j]+(step*error*x[i][j]) 
 
                 if (prediction == y[i]):
-                    correct = 0
+                    error = 0
                 else:
-                    correct = 1
+                    error = 1
 
-                w[j] = w[j]+(step*y[i]*x[i][j]*correct) 
+                w[j] = w[j]+(step*y[i]*x[i][j]*error)  
+                #w[j] = w[j]+(step*x[i][j]*error)  
+                #print(w[j])
 
     return w
         
@@ -114,27 +124,66 @@ def main():
 
     print(diabetes)
 
-    weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
-    #weights = [1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00]
-    #weights = [-1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00]
-    #weights = [0.25, 0.10, 0.5, 1.0, 1.0,1.00, 0.1, 1.00]
-
-    #predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),weights)
-
-    #print(predicted)
-
+    # Generate lists of lists
     x = diabetes.iloc[:, :-1].values.tolist()
-    
     y = diabetes.iloc[:, -1].values.tolist()
 
+    x = diabetes.iloc[:, :-1].values
+    y = diabetes.iloc[:, -1].values
 
-    final_weights = perceptron_train(x,y,weights,10000)
+    print(np.mean(y))
 
-    predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),final_weights)
+    # Generate test and train datasets
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=23,stratify=y,shuffle=True)
 
-    print(final_weights)
+    #print(y_test)
 
-    print(perceptron_accuracy(y,predicted))
+    #print(np.mean(y_test))
+    #print(len(y_test))
+
+    k_fold_strat = StratifiedKFold(n_splits=4, random_state=23,shuffle=True)
+    #k_fold_strat.get_n_splits(x, y)
+
+    
+
+    # Iterate thorgh the folds
+    for kfold_train_index, kfold_test_index in k_fold_strat.split(x, y):
+        kfold_x_train, kfold_x_test = x[kfold_train_index][:], x[kfold_test_index][:]
+        kfold_y_train, kfold_y_test = y[kfold_train_index], y[kfold_test_index]
+
+        initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+        trained_weights = perceptron_train(kfold_x_train,kfold_y_train,initial_weights,300)
+        predicted = perceptron_prediction_total(kfold_x_test,trained_weights)
+        print(trained_weights)
+        print(perceptron_accuracy(y,kfold_y_test))
+
+    
+
+
+
+
+    # Training and validation using k-fold
+
+
+
+
+
+
+    initial_weights = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]
+
+
+    #
+
+
+    #weights = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+    #weights = [1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00]
+    #weights = [-1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00, -1.00]
+
+
+    #final_weights = perceptron_train(x,y,weights,100)
+    #predicted = perceptron_prediction_total(diabetes.iloc[:, :-1].values.tolist(),final_weights)
+    #print(final_weights)
+    #print(perceptron_accuracy(y,predicted))
 
     # Initial weights
 
