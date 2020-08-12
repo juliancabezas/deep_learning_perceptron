@@ -40,6 +40,17 @@ def main():
     # Recode the output column to get -1 and 1 output values
     diabetes['Outcome'] = np.where(diabetes['Outcome'] == 0, -1, diabetes['Outcome'])
 
+    # Preprocessing
+    # Replace the missing blood pressure values by the mean
+    bp = diabetes['BloodPressure'][diabetes['BloodPressure']!=0]
+    mean_bp = bp.mean()
+    diabetes['BloodPressure'] = np.where(diabetes['BloodPressure'] == 0, mean_bp, diabetes['BloodPressure'])
+
+    # Replace the BMI missing values by their mean
+    bmi = diabetes['BMI'][diabetes['BMI']!=0]
+    mean_bmi = bmi.mean()
+    diabetes['BMI'] = np.where(diabetes['BMI'] == 0, mean_bmi, diabetes['BMI'])
+
     # Scale the variables between -1 and +1
     diabetes['Pregnancies'] = scale_data(diabetes['Pregnancies'],-1,1)
     diabetes['Glucose'] = scale_data(diabetes['Glucose'],-1,1)
@@ -147,7 +158,7 @@ def main():
     print("F1 score:", df_grid_search['F1'][row_max])
     print("Accuracy:", df_grid_search['Accuracy'][row_max])
     print("Cohen's Kappa:", df_grid_search['Kappa'][row_max])
-    print("Using:", df_grid_search['cost'][row_max], "as maximum number of features and ", df_grid_search['kernel'][row_max], "trees")
+    print("Using cost = ", df_grid_search['cost'][row_max], " and a", df_grid_search['kernel'][row_max], "kernel")
 
     print("Training final model")
 

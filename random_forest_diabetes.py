@@ -40,6 +40,17 @@ def main():
     # Recode the output column to get -1 and 1 output values
     diabetes['Outcome'] = np.where(diabetes['Outcome'] == 0, -1, diabetes['Outcome'])
 
+    # Preprocessing
+    # Replace the missing blood pressure values by the mean
+    bp = diabetes['BloodPressure'][diabetes['BloodPressure']!=0]
+    mean_bp = bp.mean()
+    diabetes['BloodPressure'] = np.where(diabetes['BloodPressure'] == 0, mean_bp, diabetes['BloodPressure'])
+
+    # Replace the BMI missing values by their mean
+    bmi = diabetes['BMI'][diabetes['BMI']!=0]
+    mean_bmi = bmi.mean()
+    diabetes['BMI'] = np.where(diabetes['BMI'] == 0, mean_bmi, diabetes['BMI'])
+
     # Scale the variables between -1 and +1
     diabetes['Pregnancies'] = scale_data(diabetes['Pregnancies'],-1,1)
     diabetes['Glucose'] = scale_data(diabetes['Glucose'],-1,1)

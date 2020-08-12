@@ -65,9 +65,15 @@ def perceptron_accuracy(truth,predicted):
 def perceptron_train(x,y,n_iter,step):
 
     # generate the initial weights
-    w = []
-    for i in range(x.shape[1]):
-        w.append(0.0)
+    #w = []
+    #for i in range(x.shape[1]):
+    #    w.append(0.0)
+
+    # Set random seed
+    np.random.seed(50)
+
+    # generate the initial weights for the input to hidden layer
+    w = np.random.normal(0.0, 0.1, x.shape[1])
 
     # Make n_iter iterations to trin the weights (also called epochs)
     for iter in range(n_iter):
@@ -117,10 +123,21 @@ def scale_data(x,lower_limit,upper_limit):
 def main():
 
     # Read the database using pandas
-    diabetes = pd.read_csv("datasets_228_482_diabetes.csv")
+    diabetes = pd.read_csv("Input_Data/datasets_228_482_diabetes.csv")
 
     # Recode the output column to get -1 and 1 output values
     diabetes['Outcome'] = np.where(diabetes['Outcome'] == 0, -1, diabetes['Outcome'])
+
+    # Preprocessing
+    # Replace the missing blood pressure values by the mean
+    bp = diabetes['BloodPressure'][diabetes['BloodPressure']!=0]
+    mean_bp = bp.mean()
+    diabetes['BloodPressure'] = np.where(diabetes['BloodPressure'] == 0, mean_bp, diabetes['BloodPressure'])
+
+    # Replace the BMI missing values by their mean
+    bmi = diabetes['BMI'][diabetes['BMI']!=0]
+    mean_bmi = bmi.mean()
+    diabetes['BMI'] = np.where(diabetes['BMI'] == 0, mean_bmi, diabetes['BMI'])
 
     # Scale the variables between -1 and +1
     diabetes['Pregnancies'] = scale_data(diabetes['Pregnancies'],-1,1)
@@ -131,6 +148,8 @@ def main():
     diabetes['BMI'] = scale_data(diabetes['BMI'],-1,1)
     diabetes['DiabetesPedigreeFunction'] = scale_data(diabetes['DiabetesPedigreeFunction'],-1,1)
     diabetes['Age'] = scale_data(diabetes['Age'],-1,1)
+
+
 
     # Print a subset of the database
     print(diabetes)
@@ -146,7 +165,7 @@ def main():
 
     # Tuning of the n_iter (epochs) and step parameters using 4-fold cross validation on the trainining database
     # If the parameters were already tuned (the file exists)
-    if not os.path.exists('grid_search_perceptron.csv'):
+    if not os.path.exists('Results/grid_search_perceptron.csv'):
 
         print("Parameter tuning not detected, tuning step and number of epochs parameters")
 
@@ -206,12 +225,12 @@ def main():
         # Create pandas dataset and store it in a csv
         dic = {'Step':step_full,'N_Iter':n_iter_full,'Accuracy':acc_full,'Kappa':kappa_full,'F1':f1_full}
         df_grid_search = pd.DataFrame(dic)
-        df_grid_search.to_csv('grid_search_perceptron.csv')
+        df_grid_search.to_csv('Results/grid_search_perceptron.csv')
         print("Tuning Ready!")
 
     else:
         # In case the parameters were already tuned
-        df_grid_search = pd.read_csv('grid_search_perceptron.csv')
+        df_grid_search = pd.read_csv('Results/grid_search_perceptron.csv')
         print("Previous tuning detected, skipping tuning")
 
     # Search the bigger F1 index in the dataframe
@@ -249,7 +268,7 @@ def main():
     # Save the final results
     dic = {'Step':step_max,'N_Iter':n_iter_max,'Accuracy':acc_final,'Kappa':kappa_final,'F1':F1_final}
     df_results = pd.DataFrame(dic, index=[0])
-    df_results.to_csv('results_perceptron.csv')
+    df_results.to_csv('Results/results_perceptron.csv')
 
 
 if __name__ == '__main__':
