@@ -330,8 +330,8 @@ def main():
 
     # Confusion matrix
     print("Confusion matrix:")
-    print(y_test)
-    print(predicted_final)
+    #print(y_test)
+    #print(predicted_final)
     print(confusion_matrix(y_test,predicted_final))
 
     # Save the final results
