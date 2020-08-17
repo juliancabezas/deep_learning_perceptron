@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: Assignment1_DL_Cabezas.aux
+The style file: ieee_fullname.bst
+Database file #1: library.bib
+Repeated entry---line 1077 of file library.bib
+ : @book{Bishop2006
+ :                 ,
+I'm skipping whatever remains of this entry
+Warning--can't use both author and editor fields in Bell2014
+Warning--can't use both author and editor fields in Bishop2006
+Warning--empty publisher in Hastie2009
+You've used 14 entries,
+            2120 wiz_defined-function locations,
+            611 strings with 6501 characters,
+and the built_in function-call counts, 4311 in all, are:
+= -- 410
+> -- 204
+< -- 3
++ -- 80
+- -- 66
+* -- 281
+:= -- 729
+add.period$ -- 42
+call.type$ -- 14
+change.case$ -- 70
+chr.to.int$ -- 0
+cite$ -- 17
+duplicate$ -- 174
+empty$ -- 353
+format.name$ -- 66
+if$ -- 904
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 17
+newline$ -- 71
+num.names$ -- 30
+pop$ -- 92
+preamble$ -- 1
+purify$ -- 60
+quote$ -- 0
+skip$ -- 119
+stack$ -- 0
+substring$ -- 198
+swap$ -- 34
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 46
+warning$ -- 3
+while$ -- 42
+width$ -- 16
+write$ -- 152
+(There was 1 error message)
