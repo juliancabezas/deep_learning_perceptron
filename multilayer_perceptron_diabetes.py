@@ -12,7 +12,7 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import cohen_kappa_score, fbeta_score
+from sklearn.metrics import cohen_kappa_score, fbeta_score, confusion_matrix
 
 #### Predict the output for a single row
 # x: Values for parameters of a single row of the input data
@@ -66,10 +66,12 @@ def perceptron_prediction_total(x,w1,w2):
             # For each hidden layer activate it
             hidden_layer_input[hidden_index] = np.dot(x[i][:],w1[:,hidden_index])
             hidden_layer_output[hidden_index] = sigmoid_function(hidden_layer_input[hidden_index])
-            
+        
+        # Now activate the output layer
         output_layer_input = np.dot(hidden_layer_output,w2)
         output_layer_output = sigmoid_function(output_layer_input)
 
+        # Predict the value according to the 0.5 threshold
         if output_layer_output > 0.5:
             predicted_value = 1
         else:
@@ -131,16 +133,19 @@ def perceptron_train(x,y,n_hidden_layer,n_iter,step):
             for hidden_index in range(n_hidden_layer):
                 
                 # Multiply the error with the derivative of the sigmoid function
-                error = (output_layer_output - y[i]) * sigmoid_function(hidden_layer_output[hidden_index],derivate=True)
+                back1 = (output_layer_output - y[i])
 
                 #Calculate the gradient for weights of the hidden layer - outlayer
-                gradient_w2 = error * hidden_layer_output[hidden_index]
+                gradient_w2 = back1 * hidden_layer_output[hidden_index]* sigmoid_function(hidden_layer_output[hidden_index],derivate=True)
 
                 # Gradient descent of the input-hidden layer
                 for input_index in range(x.shape[1]):
                     
+                    # Second backward pass to the hidden layer
+                    back2 = back1 * sigmoid_function(hidden_layer_output[hidden_index],derivate=True) * w2[hidden_index]
+
                     # Calculate the gradient using the derivative of the sigmoid function
-                    gradient_w1 = error * w2[hidden_index] * sigmoid_function(hidden_layer_input[hidden_index],derivate=True) * x[i,input_index]
+                    gradient_w1 =  back2 * sigmoid_function(hidden_layer_input[hidden_index],derivate=True) * x[i,input_index]
                     w1[input_index,hidden_index] = w1[input_index,hidden_index] - step * gradient_w1
 
                 # Update the weights of the input-hidden layer
@@ -322,6 +327,12 @@ def main():
     print("F1 score:", F1_final)
     print("Accuracy:", acc_final)
     print("Cohen's Kappa:", kappa_final)
+
+    # Confusion matrix
+    print("Confusion matrix:")
+    print(y_test)
+    print(predicted_final)
+    print(confusion_matrix(y_test,predicted_final))
 
     # Save the final results
     dic = {'N_Hidden':n_hidden_max,'Step':step_max,'N_Iter':n_iter_max,'Accuracy':acc_final,'Kappa':kappa_final,'F1':F1_final}

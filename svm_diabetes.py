@@ -12,7 +12,7 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import cohen_kappa_score, fbeta_score, accuracy_score
+from sklearn.metrics import cohen_kappa_score, fbeta_score, accuracy_score, confusion_matrix
 from sklearn.svm import SVC
 
 # scale data to have it between a and b, using the equation:
@@ -177,6 +177,12 @@ def main():
     print("F1 score:", F1_final)
     print("Accuracy:", acc_final)
     print("Cohen's Kappa:", kappa_final)
+
+    # Confusion matrix
+    print("Confusion matrix:")
+    #print(y_test)
+    #print(predicted_final)
+    print(confusion_matrix(y_test,predicted_final))
 
     # Save the final results
     dic = {'cost':cost_max,'kernel':kernel_max,'Accuracy':acc_final,'Kappa':kappa_final,'F1':F1_final}

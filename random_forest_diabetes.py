@@ -85,7 +85,7 @@ def main():
         maxf_array = np.arange(start=1, stop=9, step=1)
 
         # Test different numbers of trees from 10 to 550
-        iter_array = np.arange(start=10, stop=510, step=50)
+        iter_array = np.arange(start=100, stop=2200, step=200)
 
 
         # Store the partial results in lists
