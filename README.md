@@ -1,12 +1,12 @@
 # Assignment 1, Deep Learning Fundamentals, 2020
 
-Python implementation of a single layer perceptron, a multi later perceptron
+Python implementation of a single layer perceptron and a multi later perceptron from scrach, and comparison with Support Vector MAchine and Random Forest algorithms
 
 Testing using the PIMA Indians Diabetes Dataset [link to Kaggle] (https://www.kaggle.com/uciml/pima-indians-diabetes-database)
 
 ## Environment
 
-This repo was tested under a Linux 64 bit OS, using Python 3.8.5 
+This repo was tested under a Linux 64 bit OS, using Python 3.8.5
 
 ## How to run this repo
 
@@ -31,7 +31,8 @@ conda env create -f perceptron.yml --name perceptron
 conda activate perceptron
 ```
 
-
-4. Run each specific file in yout IDE of preference, (I recommend [VS Code](https://code.visualstudio.com/) with the Python extension), using the root folder of the directory as working directory to make the relative paths work.
+5. Run each specific file in yout IDE of preference, (I recommend [VS Code](https://code.visualstudio.com/) with the Python extension), using the root folder of the directory as working directory to make the relative paths work.
 
 Each file contains the workflow for each algorithm (Perceptron, Multilayer Perceptron, Random forest, Support Vector Machine)
+
+* Alternatevely, you can build your own environment following the package version contained in requeriments.tx
