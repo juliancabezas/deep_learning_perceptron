@@ -201,7 +201,7 @@ def main():
     diabetes['BMI'] = scale_data(diabetes['BMI'],-1,1)
     diabetes['DiabetesPedigreeFunction'] = scale_data(diabetes['DiabetesPedigreeFunction'],-1,1)
     diabetes['Age'] = scale_data(diabetes['Age'],-1,1)
-    #diabetes.insert(2, 'Intercept', 1.0)
+    diabetes.insert(2, 'Intercept', 1.0)
 
     # Print a subset of the database
     print(diabetes)
