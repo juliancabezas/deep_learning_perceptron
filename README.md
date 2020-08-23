@@ -1,7 +1,7 @@
 # Assignment 1, Deep Learning Fundamentals, 2020
 
 
-**Julian Cabezas Pena
+**Julian Cabezas Pena, 
 Student ID: a1785086**
 
 Python implementation of a single layer perceptron and a multi later perceptron from scrach, and comparison with Support Vector MAchine and Random Forest algorithms
